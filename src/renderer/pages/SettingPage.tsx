@@ -104,9 +104,9 @@ export default function SettingPage() {
                 />
               </div>
             </div>
-            {/* Clickthrough window */}
+            {/* Click-through window */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-lg">Clickthrough</h2>
+              <h2 className="text-lg">Click-through</h2>
               <div className="flex gap-1 justify-between items-center">
                 <p>Disable mouse interaction in the window by default.</p>
                 <input
@@ -444,6 +444,64 @@ export default function SettingPage() {
                     keybinds: {
                       ...settings.keybinds,
                       nextTp: captured,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="divider h-1 my-0" />
+            <div className="flex flex-row justify-between items-center">
+              <h2 className="text-lg">Zoom In</h2>
+              <KeyCaptureButton
+                value={settings.keybinds.zoomIn}
+                onKeyCaptured={(captured) => {
+                  if (captured.enable && captured.key !== "") {
+                    const error = checkKeybindError(captured);
+                    if (error) {
+                      toast.error(error);
+                    }
+
+                    const check = { ...settings.keybinds };
+                    delete check.zoomIn; // Skip checking self
+                    if (isDuplicateKeybind(captured, Object.values(check))) {
+                      toast.error("Keybind in use");
+                      return;
+                    }
+                  }
+                  updateSettings({
+                    ...settings,
+                    keybinds: {
+                      ...settings.keybinds,
+                      zoomIn: captured,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="divider h-1 my-0" />
+            <div className="flex flex-row justify-between items-center">
+              <h2 className="text-lg">Zoom Out</h2>
+              <KeyCaptureButton
+                value={settings.keybinds.zoomOut}
+                onKeyCaptured={(captured) => {
+                  if (captured.enable && captured.key !== "") {
+                    const error = checkKeybindError(captured);
+                    if (error) {
+                      toast.error(error);
+                    }
+
+                    const check = { ...settings.keybinds };
+                    delete check.zoomOut; // Skip checking self
+                    if (isDuplicateKeybind(captured, Object.values(check))) {
+                      toast.error("Keybind in use");
+                      return;
+                    }
+                  }
+                  updateSettings({
+                    ...settings,
+                    keybinds: {
+                      ...settings.keybinds,
+                      zoomOut: captured,
                     },
                   });
                 }}

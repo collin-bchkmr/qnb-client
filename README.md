@@ -10,7 +10,9 @@ The application supports keyboard shortcuts for navigation. All the functionalit
 
 This application is designed to be use with Genshin/WuWa in windowed mode.
 
-> Note: WuWa has a runaway cursor issue, it is recommended to place your route window away from the horizontal center of your screen to avoid this.
+Download the `Setup.exe` in the [GitHub release page](https://github.com/Qiqis-Notebook/qnb-client/releases/latest).
+
+> Note: WuWa has a runaway cursor issue, it is recommended to enable window click-through in settings to avoid this. Alternatively, place your route window away from the horizontal and vertical center of your screen.
 
 ## Usage
 
@@ -93,7 +95,12 @@ To manually remove the custom protocol, open `Regedit.exe` and navigate to `HKEY
 
 - As with any third party applications, you are to use at your own risk. The application does not interact with your game in anyway so the risk of such event happening should be highly unlikely. The application is also open-sourced such that you can inspect what the application is doing.
 
-**Application/installer is flagged by anit-virus**
+**How do I install the application?**
+
+- You can download the application in our [GitHub release page](https://github.com/Qiqis-Notebook/qnb-client/releases/latest) then run the `Setup.exe` application.
+  > Windows or your anti-virus will warn you that this application is risky for a reason explained below
+
+**Application/installer is flagged by windows or anit-virus**
 
 - The application is not 'Code Signed' thus the operating system may flag it as unsafe. If you have safety concerns, you can compile the application yourself by following the build step above.
 

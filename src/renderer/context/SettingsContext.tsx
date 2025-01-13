@@ -50,6 +50,20 @@ export const defaultSettings: AppSettings = {
       alt: false,
       key: "",
     },
+    zoomIn: {
+      enable: false,
+      shift: false,
+      ctrl: false,
+      alt: false,
+      key: "",
+    },
+    zoomOut: {
+      enable: false,
+      shift: false,
+      ctrl: false,
+      alt: false,
+      key: "",
+    },
   },
 };
 

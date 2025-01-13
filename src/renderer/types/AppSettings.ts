@@ -25,5 +25,7 @@ export interface AppSettings {
     next: KeyBinds;
     prevTp: KeyBinds;
     nextTp: KeyBinds;
+    zoomIn: KeyBinds;
+    zoomOut: KeyBinds;
   };
 }
