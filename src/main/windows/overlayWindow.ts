@@ -37,6 +37,7 @@ export function createOverlayWindow(url: string) {
     opacity,
     borderless,
     compensateScaling,
+    clickThrough,
   } = appSettings.routeWindow;
   const overlayBounds = store.get("overlayBounds");
   const sf = compensateScaling
@@ -81,6 +82,9 @@ export function createOverlayWindow(url: string) {
   overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }); // Mac
   if (alwaysOnTop) {
     overlayWindow.setAlwaysOnTop(true, "screen-saver");
+  }
+  if (clickThrough) {
+    overlayWindow.setIgnoreMouseEvents(clickThrough);
   }
   overlayWindow.moveTop();
 
@@ -224,4 +228,9 @@ export function closeWindow() {
     overlayWindow.close();
     overlayWindow = null;
   }
+}
+
+export function clickThrough(state: boolean) {
+  if (!overlayWindow) return;
+  overlayWindow.setIgnoreMouseEvents(state);
 }

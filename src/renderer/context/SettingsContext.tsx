@@ -31,6 +31,7 @@ export const defaultSettings: AppSettings = {
     savePosition: true,
     saveSize: true,
     compensateScaling: false,
+    clickThrough: false,
   },
   keybinds: {
     prev: { enable: true, shift: false, ctrl: false, alt: true, key: "Left" },

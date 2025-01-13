@@ -14,7 +14,13 @@ import { recentTable } from "../db";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import { ArrowLeftIcon, BadgeCheckIcon, CopyIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  BadgeCheckIcon,
+  CopyIcon,
+  MouseIcon,
+  MouseOffIcon,
+} from "lucide-react";
 
 // Types
 import type DBRecent from "../db/type/DBRecent";
@@ -35,7 +41,7 @@ export default function RoutePage() {
   const navigate = useNavigate();
 
   const { settings } = useSettings();
-  const { autoStart } = settings.routeWindow;
+  const { autoStart, clickThrough } = settings.routeWindow;
 
   // Component id
   const id = useId();
@@ -43,6 +49,7 @@ export default function RoutePage() {
   // States
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RouteDetail | null>(null);
+  const [windowClickThrough, setWindowClickThrough] = useState(clickThrough);
   const [launched, setLaunched] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
   const launchedRef = useRef<boolean>();
@@ -66,6 +73,7 @@ export default function RoutePage() {
     window.electron.ipcRenderer.closeWindow();
     setLaunched(false);
     setStartTimer(false);
+    setWindowClickThrough(windowClickThrough);
   };
   const addToRecent = async (routeDetail: RouteDetail) => {
     try {
@@ -103,6 +111,12 @@ export default function RoutePage() {
       }
     }
   };
+
+  // Set overlay window clickthrough
+  useEffect(() => {
+    if (!launchedRef.current) return;
+    window.electron.ipcRenderer.clickThrough(windowClickThrough);
+  }, [windowClickThrough, launchedRef]);
 
   // Check route exist
   useEffect(() => {
@@ -178,6 +192,7 @@ export default function RoutePage() {
   const handleRestart = debounce(() => {
     // Set StartTime to false first
     setStartTimer(false);
+    setWindowClickThrough(windowClickThrough);
 
     // After render, call handleOpen
     setTimeout(() => {
@@ -255,13 +270,11 @@ export default function RoutePage() {
                 {/* Actions */}
                 <div className="flex flex-row gap-2 w-full">
                   <Favorite route={data} />
-                  <button
-                    className="btn btn-square"
-                    title="Copy link"
-                    onClick={handleCopy}
-                  >
-                    <CopyIcon className="h-6 w-6" />
-                  </button>
+                  <div className="tooltip" data-tip="Copy link">
+                    <button className="btn btn-square" onClick={handleCopy}>
+                      <CopyIcon className="h-6 w-6" />
+                    </button>
+                  </div>
                   <button
                     className="btn grow"
                     disabled={!launched}
@@ -277,6 +290,30 @@ export default function RoutePage() {
                   >
                     {launched ? "Close" : "Open"}
                   </button>
+                  <div
+                    className="tooltip"
+                    data-tip={
+                      windowClickThrough
+                        ? "Enable interaction"
+                        : "Disable interaction"
+                    }
+                  >
+                    <button
+                      className={`btn btn-square ${
+                        windowClickThrough ? "btn-error" : "btn-neutral"
+                      }`}
+                      disabled={!launched}
+                      onClick={() => {
+                        setWindowClickThrough(!windowClickThrough);
+                      }}
+                    >
+                      {windowClickThrough ? (
+                        <MouseOffIcon className="h-6 w-6" />
+                      ) : (
+                        <MouseIcon className="h-6 w-6" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

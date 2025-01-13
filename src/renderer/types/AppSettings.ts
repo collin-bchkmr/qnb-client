@@ -18,6 +18,7 @@ export interface AppSettings {
     savePosition: boolean;
     saveSize: boolean;
     compensateScaling: boolean;
+    clickThrough: boolean;
   };
   keybinds: {
     prev: KeyBinds;
