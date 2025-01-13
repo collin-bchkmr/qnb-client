@@ -104,9 +104,9 @@ export default function SettingPage() {
                 />
               </div>
             </div>
-            {/* Clickthrough window */}
+            {/* Click-through window */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-lg">Clickthrough</h2>
+              <h2 className="text-lg">Click-through</h2>
               <div className="flex gap-1 justify-between items-center">
                 <p>Disable mouse interaction in the window by default.</p>
                 <input
