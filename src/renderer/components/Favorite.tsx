@@ -204,23 +204,28 @@ export default function Favorite({
       </button>
     );
 
-  return favorite ? (
-    <button
-      className="btn btn-square"
-      title={"Remove from favorites"}
-      disabled={loading}
-      onClick={removeFavorite}
+  return (
+    <div
+      className="tooltip"
+      data-tip={favorite ? "Remove from favorites" : "Add to favorites"}
     >
-      <HeartIcon className="fill-primary text-primary" />
-    </button>
-  ) : (
-    <button
-      className="btn btn-square"
-      title={"Add to favorites"}
-      disabled={loading}
-      onClick={addFavorite}
-    >
-      <HeartIcon />
-    </button>
+      {favorite ? (
+        <button
+          className="btn btn-square"
+          disabled={loading}
+          onClick={removeFavorite}
+        >
+          <HeartIcon className="fill-primary text-primary" />
+        </button>
+      ) : (
+        <button
+          className="btn btn-square"
+          disabled={loading}
+          onClick={addFavorite}
+        >
+          <HeartIcon />
+        </button>
+      )}
+    </div>
   );
 }

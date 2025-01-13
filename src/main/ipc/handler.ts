@@ -10,7 +10,11 @@ import type { AxiosRequestConfig, CancelTokenSource } from "axios";
 import { API_URL } from "@Config/constants";
 
 // Windows
-import { launchWindow, closeWindow } from "../windows/overlayWindow";
+import {
+  launchWindow,
+  closeWindow,
+  clickThrough,
+} from "../windows/overlayWindow";
 
 // Authentication
 import {
@@ -155,6 +159,10 @@ export function initializeIPCHandlers() {
 
   ipcMain.on("close-window", async () => {
     closeWindow();
+  });
+
+  ipcMain.on("clickThrough", (event, state) => {
+    clickThrough(state);
   });
 
   ipcMain.handle("session", async () => {

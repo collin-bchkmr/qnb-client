@@ -49,6 +49,9 @@ const electronHandler = {
     closeWindow() {
       ipcRenderer.send("close-window");
     },
+    clickThrough(state: boolean) {
+      ipcRenderer.send("clickThrough", state);
+    },
     updateSetting(settings: AppSettings) {
       ipcRenderer.send("settings", settings);
     },
