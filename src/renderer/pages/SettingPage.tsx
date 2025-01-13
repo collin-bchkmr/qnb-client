@@ -449,6 +449,64 @@ export default function SettingPage() {
                 }}
               />
             </div>
+            <div className="divider h-1 my-0" />
+            <div className="flex flex-row justify-between items-center">
+              <h2 className="text-lg">Zoom In</h2>
+              <KeyCaptureButton
+                value={settings.keybinds.zoomIn}
+                onKeyCaptured={(captured) => {
+                  if (captured.enable && captured.key !== "") {
+                    const error = checkKeybindError(captured);
+                    if (error) {
+                      toast.error(error);
+                    }
+
+                    const check = { ...settings.keybinds };
+                    delete check.zoomIn; // Skip checking self
+                    if (isDuplicateKeybind(captured, Object.values(check))) {
+                      toast.error("Keybind in use");
+                      return;
+                    }
+                  }
+                  updateSettings({
+                    ...settings,
+                    keybinds: {
+                      ...settings.keybinds,
+                      zoomIn: captured,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="divider h-1 my-0" />
+            <div className="flex flex-row justify-between items-center">
+              <h2 className="text-lg">Zoom Out</h2>
+              <KeyCaptureButton
+                value={settings.keybinds.zoomOut}
+                onKeyCaptured={(captured) => {
+                  if (captured.enable && captured.key !== "") {
+                    const error = checkKeybindError(captured);
+                    if (error) {
+                      toast.error(error);
+                    }
+
+                    const check = { ...settings.keybinds };
+                    delete check.zoomOut; // Skip checking self
+                    if (isDuplicateKeybind(captured, Object.values(check))) {
+                      toast.error("Keybind in use");
+                      return;
+                    }
+                  }
+                  updateSettings({
+                    ...settings,
+                    keybinds: {
+                      ...settings.keybinds,
+                      zoomOut: captured,
+                    },
+                  });
+                }}
+              />
+            </div>
           </div>
           {/* Reset */}
           <div className="flex flex-col gap-2">

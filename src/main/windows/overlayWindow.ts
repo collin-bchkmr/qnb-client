@@ -209,6 +209,32 @@ export function createOverlayWindow(url: string) {
         });
       }
     }
+
+    // Zoom In
+    if (keybinds.zoomIn.enable) {
+      const zoomInAccelerator = translateToAccelerator(keybinds.zoomIn);
+      if (zoomInAccelerator) {
+        globalShortcut.register(zoomInAccelerator, () => {
+          console.log("Zoom In"); // BUG: Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+          overlayWindow.webContents.executeJavaScript(
+            `document.getElementById("zoom-in").click()`
+          );
+        });
+      }
+    }
+
+    // Zoom Out
+    if (keybinds.zoomOut.enable) {
+      const zoomInAccelerator = translateToAccelerator(keybinds.zoomOut);
+      if (zoomInAccelerator) {
+        globalShortcut.register(zoomInAccelerator, () => {
+          console.log("Zoom Out"); // BUG: Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+          overlayWindow.webContents.executeJavaScript(
+            `document.getElementById("zoom-out").click()`
+          );
+        });
+      }
+    }
   }
 }
 
