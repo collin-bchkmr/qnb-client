@@ -18,6 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install FUSE
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fuse libfuse2
+
       - name: Set up Node.js 20.15.0
         uses: actions/setup-node@v4
         with:
@@ -45,7 +50,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: ./out/make/AppImage/Qiqi\'s_Notebook-x86_64.AppImage
+          files: "./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage"
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
