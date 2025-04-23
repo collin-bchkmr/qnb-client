@@ -26,12 +26,19 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install typescript@5.3.3  # Install TypeScript 5.3.3 explicitly
+          npm install typescript@5.3.3
 
-      - name: Make executable
+      - name: Download appimagetool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+      - name: Make executable and create AppImage
         run: |
           chmod +x ./make
           ./make
+          # List output directory to ensure the AppImage exists
+          ls -R ./out/make/
 
       - name: Read version from package.json
         id: get_version
@@ -44,7 +51,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: ./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage
+          files: ./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage  # Ensure this path is correct
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
