@@ -32,12 +32,15 @@ jobs:
         run: |
           wget https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
+          mv appimagetool-x86_64.AppImage ~/appimagetool-x86_64.AppImage
 
-      - name: Make executable and create AppImage
+      - name: Run make and capture all logs
         run: |
-          chmod +x ./make
-          ./make
-          # List output directory to ensure the AppImage exists
+          echo "Running npm run make..."
+          npm run make  # Run the make script
+          echo "Finished running npm run make."
+          # List the output directory to check if AppImage exists
+          echo "Listing contents of out/make directory..."
           ls -R ./out/make/
 
       - name: Read version from package.json
@@ -51,7 +54,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: ./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage  # Ensure this path is correct
+          files: ./out/make/AppImage/Qiqi\'s_Notebook-x86_64.AppImage  # Ensure this path is correct
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
