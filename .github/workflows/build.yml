@@ -84,7 +84,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/squirrel.windows/*" # Ensure this path is correct
+          files: "./out/make/squirrel.windows/Qiqi-s-Notebook-${{ env.VERSION }}-Setup.exe" # Adjusted to include version in name
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/dmg/*.dmg" # Ensure this path is correct
+          files: "./out/make/dmg/Qiqi-s-Notebook-${{ env.VERSION }}.dmg" # Adjusted to include version in name
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
