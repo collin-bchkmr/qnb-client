@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y fuse libfuse2
           chmod +x ./AppImageTool.AppImage
 
-      - name: Make AppImage (Linux only)
+      - name: Build for Linux
         if: runner.os == 'Linux'
         run: |
           chmod +x ./make
@@ -47,11 +47,25 @@ jobs:
         run: |
           npm run make
 
-      - name: Read version from package.json
+      - name: List contents of out/make directory (for debugging)
+        run: |
+          ls -R ./out/make/
+
+      - name: Read version from package.json (Windows)
+        if: runner.os == 'Windows'
+        id: get_version_windows
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Read version from package.json (Linux/macOS)
+        if: runner.os != 'Windows'
         id: get_version
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+        shell: bash
 
       - name: Upload Linux AppImage
         if: runner.os == 'Linux'
@@ -64,24 +78,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows artifact
+      - name: Upload Windows Installer
         if: runner.os == 'Windows'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/squirrel.windows/*" # Example path - depends what electron-forge outputs
+          files: "./out/make/squirrel.windows/*" # Ensure this path is correct
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload macOS artifact
+      - name: Upload macOS DMG
         if: runner.os == 'macOS'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/*.dmg" # or whatever path your forge config outputs
+          files: "./out/make/dmg/*.dmg" # Ensure this path is correct
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
