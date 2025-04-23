@@ -1,38 +1,201 @@
 name: Build and Release
+ 
 
+ 
 on:
+ 
   push:
+ 
     branches:
+ 
       - master
+ 
 
+ 
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-latest
+ 
+  build:
+ 
+    runs-on: ${{ matrix.os }}
+ 
+    strategy:
+ 
+      matrix:
+ 
+        os: [ubuntu-latest, windows-latest, macos-latest]
+ 
 
+ 
     permissions:
+ 
       contents: write
+ 
 
+ 
     steps:
+ 
       - name: Checkout code
+ 
         uses: actions/checkout@v4
+ 
 
+ 
       - name: Set up Node.js
+ 
         uses: actions/setup-node@v4
+ 
         with:
+ 
           node-version: 20.15.0
+ 
 
+ 
       - name: Install dependencies
+ 
         run: |
+ 
           npm install
+ 
           npm install typescript@5.3.3
+ 
 
-      - name: Build the application
+ 
+      - name: Install Linux dependencies
+ 
+        if: runner.os == 'Linux'
+ 
         run: |
+ 
+          sudo apt-get update
+ 
+          sudo apt-get install -y fuse libfuse2
+ 
+          chmod +x ./AppImageTool.AppImage
+ 
+
+ 
+      - name: Build for Linux
+ 
+        if: runner.os == 'Linux'
+ 
+        run: |
+ 
+          chmod +x ./make
+ 
+          ./make
+ 
+
+ 
+      - name: Build for Windows/macOS
+ 
+        if: runner.os != 'Linux'
+ 
+        run: |
+ 
           npm run make
+ 
 
-      - name: Publish the application
+ 
+      - name: List contents of out/make directory (for debugging)
+ 
         run: |
-          npm run publish -- --publish always
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+          ls -R ./out/make/
+ 
 
+ 
+      - name: Read version from package.json (Windows)
+ 
+        if: runner.os == 'Windows'
+ 
+        id: get_version_windows
+ 
+        run: |
+ 
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+ 
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+ 
+        shell: pwsh
+ 
+
+ 
+      - name: Read version from package.json (Linux/macOS)
+ 
+        if: runner.os != 'Windows'
+ 
+        id: get_version
+ 
+        run: |
+ 
+          VERSION=$(jq -r '.version' package.json)
+ 
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+ 
+        shell: bash
+ 
+
+ 
+      - name: Upload Linux AppImage
+ 
+        if: runner.os == 'Linux'
+ 
+        uses: softprops/action-gh-release@v2
+ 
+        with:
+ 
+          tag_name: v${{ env.VERSION }}
+ 
+          name: Release v${{ env.VERSION }}
+ 
+          files: "./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage"
+ 
+          make_latest: true
+ 
+        env:
+ 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+
+ 
+      - name: Upload Windows Installer
+ 
+        if: runner.os == 'Windows'
+ 
+        uses: softprops/action-gh-release@v2
+ 
+        with:
+ 
+          tag_name: v${{ env.VERSION }}
+ 
+          name: Release v${{ env.VERSION }}
+ 
+          files: "./out/make/squirrel.windows/Qiqi-s-Notebook-${{ env.VERSION }}-Setup.exe" # Adjusted to include version in name
+ 
+          make_latest: true
+ 
+        env:
+ 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+
+ 
+      - name: Upload macOS DMG
+ 
+        if: runner.os == 'macOS'
+ 
+        uses: softprops/action-gh-release@v2
+ 
+        with:
+ 
+          tag_name: v${{ env.VERSION }}
+ 
+          name: Release v${{ env.VERSION }}
+ 
+          files: "./out/make/dmg/Qiqi-s-Notebook-${{ env.VERSION }}.dmg" # Adjusted to include version in name
+ 
+          make_latest: true
+ 
+        env:
+ 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
