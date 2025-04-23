@@ -50,7 +50,9 @@ const config: ForgeConfig = {
       },
       []
     ),
-    new MakerZIP({}, []),
+    //Win32 = Windows, Darwin = MacOS, Linux = Linux (lmao)
+    new MakerZIP({}, ["win32", "darwin", "linux"]),
+
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
