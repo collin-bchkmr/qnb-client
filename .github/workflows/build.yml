@@ -6,11 +6,8 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+  build-and-release:
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
@@ -19,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 20.15.0
         uses: actions/setup-node@v4
         with:
           node-version: 20.15.0
@@ -29,73 +26,49 @@ jobs:
           npm install
           npm install typescript@5.3.3
 
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fuse libfuse2
-          chmod +x ./AppImageTool.AppImage
-
-      - name: Build for Linux
-        if: runner.os == 'Linux'
+      - name: Make AppImage
         run: |
           chmod +x ./make
+          chmod +x ./AppImageTool.AppImage
           ./make
 
-      - name: Build for Windows/macOS
-        if: runner.os != 'Linux'
+      - name: Read version from package.json
+        id: get_version
         run: |
-          npm run make
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: List contents of out/make directory (for debugging)
         run: |
           ls -R ./out/make/
 
-      - name: Read version from package.json (Windows)
-        if: runner.os == 'Windows'
-        id: get_version_windows
-        run: |
-          $version = (Get-Content package.json | ConvertFrom-Json).version
-          echo "VERSION=$version" >> $env:GITHUB_ENV
-        shell: pwsh
-
-      - name: Read version from package.json (Linux/macOS)
-        if: runner.os != 'Windows'
-        id: get_version
-        run: |
-          VERSION=$(jq -r '.version' package.json)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Upload Linux AppImage
-        if: runner.os == 'Linux'
+      - name: Upload Windows Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/AppImage/Qiqi's_Notebook-x86_64.AppImage"
+          files: "./out/make/squirrel.windows/Qiqi*.exe"  # Adjusted path pattern
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows Installer
-        if: runner.os == 'Windows'
+      - name: Upload macOS Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/squirrel.windows/*" # Ensure this path is correct
+          files: "./out/make/dmg/*.dmg"  # Adjust path if needed
           make_latest: true
+          file_name: "Qiqi's-Notebook-${{ env.VERSION }}.dmg"  # Added custom name for macOS release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload macOS DMG
-        if: runner.os == 'macOS'
+      - name: Upload Linux Release (AppImage)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          files: "./out/make/dmg/*.dmg" # Ensure this path is correct
+          files: "./out/make/AppImage/Qiqi\'s_Notebook-x86_64.AppImage"
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
