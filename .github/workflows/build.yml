@@ -1,10 +1,12 @@
+# XD thanks ChatGPT
+
 # .github/workflows/build-and-release.yml
 name: Build and Release
 
 on:
   push:
     branches:
-      - main  # or whichever branch you want
+      - master  # or whichever branch you want
 
 jobs:
   build-and-release:
