@@ -41,8 +41,7 @@ EOF
 
 chmod +x ./out/make/AppImage/AppDir/AppRun
 
-# Copy files from the extracted folder to the AppImage structure
-cp -r "./out/make/zip/linux/x64/Qiqi's Notebook-linux-x64/"* ./out/make/AppImage/AppDir/usr/bin/
+cp -r ./Qiqi\'s\ Notebook-linux-x64/* ./out/make/AppImage/AppDir/usr/bin/
 
 # Create the AppImage using appimagetool
 ./AppImageTool.AppImage ./out/make/AppImage/AppDir
