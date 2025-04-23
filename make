@@ -45,7 +45,7 @@ chmod +x ./out/make/AppImage/AppDir/AppRun
 cp -r "./out/make/zip/linux/x64/Qiqi's Notebook-linux-x64/"* ./out/make/AppImage/AppDir/usr/bin/
 
 # Create the AppImage using appimagetool
-~/appimagetool-x86_64.AppImage ./out/make/AppImage/AppDir
+./AppImageTool.AppImage ./out/make/AppImage/AppDir
 
 # Cleanup: delete the AppDir folder and other temporary folders
 rm -rf ./out/make/AppImage/AppDir
